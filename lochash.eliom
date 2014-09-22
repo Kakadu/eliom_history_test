@@ -1,7 +1,5 @@
 {client{
 open Firebug
-(*open Helpers*)
-open Helpers_client
 open Printf
 open Js
 
@@ -36,59 +34,15 @@ let set_helper' (k,v) xs =
     |  n -> hash##slice (0, n)
   in
   let ans = prefix##concat_4 (k, Js.string "=", v, postfix) in
-  Dom_html.window##location##hash <- prefix##concat_2 (Js.string "#", ans);
-  console##log (Dom_html.window##location##hash)
-
-let remove_value k =
-  let xs = read_hash () |> List.Assoc.remove ~key:k in
-  printf "after len = %d\n" (List.length xs);
-  match xs with
-  | [] -> Dom_html.window##location##hash <- Js.string ""
-  | (k,v)::tl -> set_helper' (k,v) tl
-
-let set_value ~key v =
-  console##log_3 (Js.string "set_value", Js.string key, Js.string v);
-  let k = Js.string key in
-  let xs = read_hash () |> List.remove_assoc k (* |> ((::) (k, Js.string v) ) *) in
-  set_helper' (k, Js.string v) xs
+  Dom_html.window##location##hash <- prefix##concat_2 (Js.string "#", ans)
 
 let get_value_exn (k: string) : js_string t =
   let key = Js.string k in
-  List.Assoc.assoc_exn key ~set:(read_hash())
+  ListLabels.assoc key (read_hash())
 
 let get_value key =
   try Some(get_value_exn key)
   with Not_found -> None
 
-let set_mode m =
-  let string_of_mode = function
-    | Common.Mode1 -> "1"
-    | Common.Mode2 -> "2"
-    | Common.Mode3 -> "3"
-    | Common.Mode4 -> "4"
-  in
-  let xs = read_hash ()
-           |> List.filter ~f:(fun (k,_) -> Js.to_string k <> "mode") in
-  set_helper' (Js.string "mode", Js.string @@ string_of_mode m) xs
-
-
-let detect_mode () : Common.mode =
-  let xs = read_hash () in
-  let ans =
-    try (match List.assoc (Js.string "mode") xs |> Js.to_string with
-         | "1" -> Some Common.Mode1
-         | "2" -> Some Common.Mode2
-         | "3" -> Some Common.Mode3
-         | "4" -> Some Common.Mode4
-         |  _  -> None)
-    with Not_found -> None
-  in
-  Option.get ~default:Common.Mode1 ans
-
-(*
-let get_value key =
-  let xs = read_hash () in
-  List.Assoc.assoc (Js.string key) xs |> Js.to_string
- *)
 
    }}

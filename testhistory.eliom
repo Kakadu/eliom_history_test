@@ -71,7 +71,10 @@ let content () =
         console##log_2 (Js.string "create initial state: name = ", Js.string name);
         let st = make_state name in
         console##log_2 (Js.string "state created:", st );
-        (*Dom_html.window##history##pushState (st, Js.string name, Js.string new_url);*)
+        console##log_3 (Js.string "current state: ", Dom_html.window##history, Dom_html.window##history##state);
+        console##log (Js.string "updating state");
+        Dom_html.window##history##replaceState (st, Js.string name, Js.string new_url);
+        console##log_3 (Js.string "current state: ", Dom_html.window##history, Dom_html.window##history##state);
         ()
 
      | Some _ -> ()
