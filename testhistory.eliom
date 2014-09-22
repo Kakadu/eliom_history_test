@@ -75,12 +75,14 @@ let content () =
         console##log (Js.string "updating state");
         Dom_html.window##history##replaceState (st, Js.string name, Js.string new_url);
         console##log_3 (Js.string "current state: ", Dom_html.window##history, Dom_html.window##history##state);
+        console##log_2 (Js.string "unsafe access", Js.Unsafe.variable "window.history.state");
         ()
 
      | Some _ -> ()
    in
 
    Dom_html.window##onpopstate <- Dom_html.handler (fun (_ev: Dom_html.popStateEvent Js.t) ->
+     console##log (Js.string "onpopstate");
      let st: the_state Js.t = get_state _ev##state in
      let name = Js.to_string st##name in
      console##log_2 (Js.string "state: ", st);

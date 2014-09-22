@@ -3,8 +3,6 @@ open Firebug
 open Printf
 open Js
 
-let to_jsstring () = Dom_html.window##location##hash
-
 type hash_t = ((js_string t) * (js_string t)) list
 
 let read_hash () : hash_t =
@@ -22,20 +20,6 @@ let read_hash () : hash_t =
   if hash_pos < 0 then []
   else split_amp (hash##slice_end (hash_pos+1) )
 
-let set_helper' (k,v) xs =
-  let postfix = List.fold_left xs
-                  ~f:(fun acc (k,v) -> acc##concat_4 (Js.string "&", k, Js.string "=", v) )
-                  ~init:(Js.string "")
-  in
-  let hash = Dom_html.window##location##hash in
-  let prefix =
-    match hash##indexOf (Js.string "#") with
-    | -1 -> hash
-    |  n -> hash##slice (0, n)
-  in
-  let ans = prefix##concat_4 (k, Js.string "=", v, postfix) in
-  Dom_html.window##location##hash <- prefix##concat_2 (Js.string "#", ans)
-
 let get_value_exn (k: string) : js_string t =
   let key = Js.string k in
   ListLabels.assoc key (read_hash())
@@ -45,4 +29,4 @@ let get_value key =
   with Not_found -> None
 
 
-   }}
+}}
