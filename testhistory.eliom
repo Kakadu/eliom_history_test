@@ -62,7 +62,7 @@ let content () =
         %update_content q url;
         let st = make_state q in
         console##log_2 (Js.string "q = ", Js.string q);
-        Dom_html.window##history##replaceState (st, Js.string q, Js.string new_url)
+        Dom_html.window##history##replaceState (st, Js.Optdef.return @@ Js.string q, Js.string new_url)
 
      | None ->
         let (name,url) = List.hd %cats in
@@ -73,7 +73,7 @@ let content () =
         console##log_2 (Js.string "state created:", st );
         console##log_3 (Js.string "current state: ", Dom_html.window##history, Dom_html.window##history##state);
         console##log (Js.string "updating state");
-        Dom_html.window##history##replaceState (st, Js.string name, Js.string new_url);
+        Dom_html.window##history##pushState (st, Js.Optdef.return @@ Js.string name, Js.string new_url);
         console##log_3 (Js.string "current state: ", Dom_html.window##history, Dom_html.window##history##state);
         console##log_2 (Js.string "unsafe access", Js.Unsafe.variable "window.history.state");
         ()
